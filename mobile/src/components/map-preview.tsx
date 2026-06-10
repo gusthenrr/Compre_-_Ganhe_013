@@ -1,3 +1,4 @@
+import * as React from "react";
 import { useWindowDimensions, View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import Svg, { Circle, Path } from "react-native-svg";
@@ -36,27 +37,41 @@ function MapPinMarker({ color, active }: { color: string; active: boolean }) {
 export function MapPreview({ restaurants, selectedId, onSelect, expanded }: Props) {
   const theme = useAppTheme();
   const { width } = useWindowDimensions();
+  const mapRef = React.useRef<MapView>(null);
   const height = expanded ? 470 : 305;
   const selected = restaurants.find((item) => item.id === selectedId) ?? restaurants[0];
   const centerLatitude = selected?.latitude ?? -23.9608;
   const centerLongitude = selected?.longitude ?? -46.3336;
+  const latitudeDelta = expanded ? 0.065 : 0.038;
+  const longitudeDelta = expanded ? 0.052 : 0.03;
+
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      mapRef.current?.animateToRegion(
+        {
+          latitude: centerLatitude,
+          longitude: centerLongitude,
+          latitudeDelta,
+          longitudeDelta,
+        },
+        90,
+      );
+    }, 45);
+
+    return () => clearTimeout(timeout);
+  }, [centerLatitude, centerLongitude, latitudeDelta, longitudeDelta]);
 
   return (
     <View style={{ height, overflow: "hidden", backgroundColor: theme.dark ? "#101820" : "#DCE7F2" }}>
       <MapView
+        ref={mapRef}
         provider={PROVIDER_GOOGLE}
         style={{ width, height }}
         initialRegion={{
           latitude: centerLatitude,
           longitude: centerLongitude,
-          latitudeDelta: expanded ? 0.065 : 0.038,
-          longitudeDelta: expanded ? 0.052 : 0.03,
-        }}
-        region={{
-          latitude: centerLatitude,
-          longitude: centerLongitude,
-          latitudeDelta: expanded ? 0.065 : 0.038,
-          longitudeDelta: expanded ? 0.052 : 0.03,
+          latitudeDelta,
+          longitudeDelta,
         }}
         toolbarEnabled={false}
         showsCompass={false}
