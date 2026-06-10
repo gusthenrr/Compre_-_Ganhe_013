@@ -1,6 +1,5 @@
-import { Map, Rows3 } from "lucide-react-native";
 import * as React from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { PanResponder, Pressable, ScrollView, Text, View } from "react-native";
 
 import { AppBackground } from "@/components/app-background";
 import { FilterChips } from "@/components/filter-chips";
@@ -52,6 +51,33 @@ export default function ExploreScreen() {
   const [expanded, setExpanded] = React.useState(false);
   const filtered = applySearchAndFilter(restaurants, search, filter);
   const [selectedId, setSelectedId] = React.useState<number | undefined>(filtered[0]?.id);
+  const listRestaurants = React.useMemo(() => {
+    if (!selectedId) {
+      return filtered;
+    }
+    return [...filtered].sort((a, b) => {
+      if (a.id === selectedId) {
+        return -1;
+      }
+      if (b.id === selectedId) {
+        return 1;
+      }
+      return a.distance_meters - b.distance_meters;
+    });
+  }, [filtered, selectedId]);
+  const sheetPanResponder = React.useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, gesture) => Math.abs(gesture.dy) > 10,
+      onPanResponderRelease: (_, gesture) => {
+        if (gesture.dy > 18) {
+          setExpanded(true);
+        }
+        if (gesture.dy < -18) {
+          setExpanded(false);
+        }
+      },
+    }),
+  ).current;
 
   React.useEffect(() => {
     if (filtered.length && !filtered.some((restaurant) => restaurant.id === selectedId)) {
@@ -61,8 +87,9 @@ export default function ExploreScreen() {
 
   return (
     <AppBackground>
-      <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={{ padding: 20, paddingBottom: 112, gap: 16 }}>
-        <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+      <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={{ paddingBottom: 112 }}>
+        <View style={{ paddingHorizontal: 20, paddingTop: 16, gap: 12 }}>
+        <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
           <View style={{ flex: 1 }}>
             <SearchInput value={search} onChangeText={setSearch} placeholder="Buscar restaurantes, bairros..." />
           </View>
@@ -71,7 +98,7 @@ export default function ExploreScreen() {
               flexDirection: "row",
               borderRadius: 18,
               backgroundColor: theme.chip,
-              padding: 4,
+              padding: 3,
               borderWidth: 1,
               borderColor: theme.border,
             }}
@@ -83,22 +110,15 @@ export default function ExploreScreen() {
                   key={item}
                   onPress={() => setMode(item)}
                   style={{
-                    minHeight: 42,
-                    minWidth: 68,
+                    minHeight: 36,
+                    minWidth: 48,
                     borderRadius: 14,
                     alignItems: "center",
                     justifyContent: "center",
-                    flexDirection: "row",
-                    gap: 6,
                     backgroundColor: active ? theme.accent : "transparent",
                   }}
                 >
-                  {item === "Mapa" ? (
-                    <Map color={active ? "#06111D" : theme.text} size={17} strokeWidth={2.4} />
-                  ) : (
-                    <Rows3 color={active ? "#06111D" : theme.text} size={17} strokeWidth={2.4} />
-                  )}
-                  <Text selectable style={{ color: active ? "#06111D" : theme.text, fontWeight: "900" }}>
+                  <Text selectable style={{ color: active ? "#06111D" : theme.text, fontSize: 12, fontWeight: "900" }}>
                     {item}
                   </Text>
                 </Pressable>
@@ -108,51 +128,62 @@ export default function ExploreScreen() {
         </View>
 
         <FilterChips selected={filter} onSelect={setFilter} />
+        </View>
 
         <View
           style={{
-            minHeight: 48,
+            minHeight: 28,
             borderTopWidth: 1,
             borderBottomWidth: 1,
             borderColor: theme.border,
             alignItems: "center",
             justifyContent: "center",
+            marginTop: 10,
           }}
         >
-          <Text selectable style={{ color: theme.text, fontSize: 17, fontWeight: "900" }}>
+          <Text selectable style={{ color: theme.text, fontSize: 13, fontWeight: "900" }}>
             Santos - SP
           </Text>
         </View>
 
         {mode === "Mapa" ? (
-          <View style={{ gap: 10 }}>
-            <MapPreview restaurants={filtered} selectedId={selectedId} onSelect={setSelectedId} expanded={expanded} />
-            <Pressable
-              onPress={() => setExpanded((value) => !value)}
-              style={{
-                alignSelf: "center",
-                minHeight: 38,
-                borderRadius: 999,
-                paddingHorizontal: 16,
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: theme.surfaceStrong,
-              }}
-            >
-              <Text selectable style={{ color: theme.text, fontWeight: "900" }}>
-                {expanded ? "Reduzir mapa" : "Expandir mapa"}
-              </Text>
-            </Pressable>
-          </View>
+          <MapPreview restaurants={filtered} selectedId={selectedId} onSelect={setSelectedId} expanded={expanded} />
         ) : null}
+
+        <View
+          style={{
+            marginTop: mode === "Mapa" ? -12 : 14,
+            paddingHorizontal: 20,
+            paddingTop: 10,
+            paddingBottom: 8,
+            borderTopLeftRadius: 22,
+            borderTopRightRadius: 22,
+            backgroundColor: theme.dark ? "#081018" : theme.background,
+          }}
+        >
+          <Pressable
+            onPress={() => setExpanded((value) => !value)}
+            style={{ alignItems: "center", paddingTop: 4, paddingBottom: 14 }}
+            {...sheetPanResponder.panHandlers}
+          >
+            <View
+              style={{
+                width: 54,
+                height: 5,
+                borderRadius: 999,
+                backgroundColor: theme.dark ? "rgba(255,255,255,0.28)" : "rgba(16,24,40,0.22)",
+              }}
+            />
+          </Pressable>
 
         <View style={{ gap: 2 }}>
           <Text selectable style={{ color: theme.muted, fontWeight: "800" }}>
             Exibindo {filtered.length} parceiros em Santos
           </Text>
-          {filtered.map((restaurant) => (
+          {listRestaurants.map((restaurant) => (
             <RestaurantListItem key={restaurant.id} restaurant={restaurant} />
           ))}
+        </View>
         </View>
       </ScrollView>
     </AppBackground>
