@@ -1,4 +1,5 @@
-import { useColorScheme } from "react-native";
+import * as React from "react";
+import { Appearance } from "react-native";
 
 export const palette = {
   navy: "#06234F",
@@ -12,7 +13,17 @@ export const palette = {
 };
 
 export function useAppTheme() {
-  const scheme = useColorScheme();
+  const [scheme, setScheme] = React.useState(() => Appearance.getColorScheme());
+
+  React.useEffect(() => {
+    setScheme(Appearance.getColorScheme());
+    const subscription = Appearance.addChangeListener(({ colorScheme }) => {
+      setScheme(colorScheme);
+    });
+
+    return () => subscription.remove();
+  }, []);
+
   const dark = scheme === "dark";
 
   return {

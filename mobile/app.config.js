@@ -10,15 +10,18 @@ module.exports = {
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "automatic",
+    plugins: ["expo-system-ui"],
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.gusthenrr.compre-ganhe-013",
+      userInterfaceStyle: "automatic",
       config: {
         googleMapsApiKey: iosGoogleMapsApiKey,
       },
     },
     android: {
       package: "com.gusthenrr.compre_ganhe_013",
+      userInterfaceStyle: "automatic",
       adaptiveIcon: {
         backgroundColor: "#06234F",
         foregroundImage: "./assets/android-icon-foreground.png",

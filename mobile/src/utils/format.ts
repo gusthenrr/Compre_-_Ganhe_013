@@ -9,6 +9,10 @@ export function formatDistance(meters: number) {
   return `${meters} m`;
 }
 
+export function formatServiceMode(value: string) {
+  return value === "Ambos" ? "Presencial e delivery" : value;
+}
+
 export function formatBirthDate(value?: string | null) {
   if (!value) {
     return "";

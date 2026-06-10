@@ -9,7 +9,7 @@ type Props = {
   placeholder?: string;
 };
 
-export function SearchInput({ value, onChangeText, placeholder = "Buscar restaurantes, bairros ou promocoes" }: Props) {
+export function SearchInput({ value, onChangeText, placeholder = "Buscar restaurantes" }: Props) {
   const theme = useAppTheme();
 
   return (

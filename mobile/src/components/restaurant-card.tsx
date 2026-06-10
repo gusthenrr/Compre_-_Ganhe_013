@@ -5,7 +5,7 @@ import { Pressable, Text, View } from "react-native";
 
 import { useAppData } from "@/context/app-data-context";
 import { Restaurant } from "@/types";
-import { formatDistance } from "@/utils/format";
+import { formatDistance, formatServiceMode } from "@/utils/format";
 
 import { FavoriteButton } from "./favorite-button";
 import { useAppTheme } from "@/theme/colors";
@@ -17,6 +17,7 @@ type Props = {
 export function RestaurantCard({ restaurant }: Props) {
   const theme = useAppTheme();
   const { toggleFavorite } = useAppData();
+  const serviceMode = formatServiceMode(restaurant.service_mode);
 
   return (
     <Pressable
@@ -60,8 +61,8 @@ export function RestaurantCard({ restaurant }: Props) {
             backgroundColor: restaurant.is_visited ? "rgba(53,228,129,0.16)" : theme.surfaceStrong,
           }}
         >
-          <Text selectable style={{ color: restaurant.is_visited ? theme.accent : theme.muted, fontSize: 12, fontWeight: "900" }}>
-            {restaurant.is_visited ? "Ja visitado" : restaurant.service_mode}
+          <Text selectable numberOfLines={1} style={{ color: restaurant.is_visited ? theme.accent : theme.muted, fontSize: 12, fontWeight: "900" }}>
+            {restaurant.is_visited ? "Ja visitado" : serviceMode}
           </Text>
         </View>
       </View>

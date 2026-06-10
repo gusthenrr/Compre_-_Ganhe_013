@@ -1,21 +1,27 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useColorScheme } from "react-native";
+import * as SystemUI from "expo-system-ui";
+import * as React from "react";
 
 import { AuthProvider } from "@/context/auth-context";
 import { AppDataProvider } from "@/context/app-data-context";
+import { useAppTheme } from "@/theme/colors";
 
 export default function RootLayout() {
-  const scheme = useColorScheme();
+  const theme = useAppTheme();
+
+  React.useEffect(() => {
+    SystemUI.setBackgroundColorAsync(theme.background);
+  }, [theme.background]);
 
   return (
     <AuthProvider>
       <AppDataProvider>
-        <StatusBar style={scheme === "dark" ? "light" : "dark"} />
+        <StatusBar style={theme.dark ? "light" : "dark"} />
         <Stack
           screenOptions={{
             headerShown: false,
-            contentStyle: { backgroundColor: scheme === "dark" ? "#07111E" : "#F6F8FC" },
+            contentStyle: { backgroundColor: theme.background },
           }}
         >
           <Stack.Screen name="index" />

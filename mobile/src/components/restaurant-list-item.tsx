@@ -6,7 +6,7 @@ import { Pressable, Text, View } from "react-native";
 import { useAppData } from "@/context/app-data-context";
 import { useAppTheme } from "@/theme/colors";
 import { Restaurant } from "@/types";
-import { formatDistance } from "@/utils/format";
+import { formatDistance, formatServiceMode } from "@/utils/format";
 
 import { FavoriteButton } from "./favorite-button";
 
@@ -18,6 +18,8 @@ type Props = {
 export function RestaurantListItem({ restaurant, compact = false }: Props) {
   const theme = useAppTheme();
   const { toggleFavorite } = useAppData();
+  const serviceMode = formatServiceMode(restaurant.service_mode);
+  const combinedServiceMode = serviceMode === "Presencial e delivery";
 
   return (
     <Pressable
@@ -59,8 +61,17 @@ export function RestaurantListItem({ restaurant, compact = false }: Props) {
               {formatDistance(restaurant.distance_meters)}
             </Text>
           </View>
-          <Text selectable style={{ color: theme.muted, fontSize: 13, fontWeight: "700" }}>
-            {restaurant.service_mode}
+          <Text
+            selectable
+            numberOfLines={combinedServiceMode ? 2 : 1}
+            style={{
+              color: theme.muted,
+              fontSize: 13,
+              fontWeight: "700",
+              flexBasis: compact && combinedServiceMode ? "100%" : undefined,
+            }}
+          >
+            {serviceMode}
           </Text>
           {restaurant.is_visited ? (
             <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>

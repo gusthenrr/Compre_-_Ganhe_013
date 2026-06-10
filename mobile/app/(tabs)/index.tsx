@@ -203,11 +203,21 @@ function HeaderMetric({ label, value, icon }: { label: string; value: string; ic
       }}
     >
       {icon}
-      <View style={{ flex: 1, gap: 0, minWidth: 0 }}>
-        <Text selectable numberOfLines={1} style={{ color: theme.muted, fontSize: 8, fontWeight: "800" }}>
+      <View style={{ flex: 1, gap: 0, minWidth: 0, alignItems: wide ? "flex-start" : "center" }}>
+        <Text selectable numberOfLines={1} style={{ color: theme.muted, fontSize: 8, fontWeight: "800", textAlign: wide ? "left" : "center" }}>
           {label}
         </Text>
-        <Text selectable numberOfLines={1} style={{ color: theme.text, fontSize: wide ? 12 : 13, fontWeight: "900", fontVariant: ["tabular-nums"] }}>
+        <Text
+          selectable
+          numberOfLines={1}
+          style={{
+            color: theme.text,
+            fontSize: wide ? 12 : 13,
+            fontWeight: "900",
+            fontVariant: ["tabular-nums"],
+            textAlign: wide ? "left" : "center",
+          }}
+        >
           {value}
         </Text>
       </View>

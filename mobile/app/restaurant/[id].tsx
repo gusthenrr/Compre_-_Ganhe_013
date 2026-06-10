@@ -8,6 +8,7 @@ import { AppBackground } from "@/components/app-background";
 import { FavoriteButton } from "@/components/favorite-button";
 import { useAppData } from "@/context/app-data-context";
 import { useAppTheme } from "@/theme/colors";
+import { formatServiceMode } from "@/utils/format";
 
 export default function RestaurantDetailScreen() {
   const theme = useAppTheme();
@@ -32,6 +33,7 @@ export default function RestaurantDetailScreen() {
   }
 
   const activeRestaurant = restaurant;
+  const serviceMode = formatServiceMode(restaurant.service_mode);
 
   function openRoute() {
     const query = `${activeRestaurant.latitude},${activeRestaurant.longitude}`;
@@ -114,7 +116,7 @@ export default function RestaurantDetailScreen() {
             <InfoRow icon={<Phone color={theme.accent} size={18} strokeWidth={2.5} />} text={restaurant.phone} />
             <InfoRow icon={<ExternalLink color={theme.accent} size={18} strokeWidth={2.5} />} text={restaurant.instagram} />
             <Text selectable style={{ color: theme.muted, fontWeight: "800" }}>
-              Tipo: {restaurant.service_mode}
+              Tipo: {serviceMode}
             </Text>
             <Text selectable style={{ color: theme.muted, fontWeight: "800" }}>
               Pet friendly: {restaurant.pet_friendly ? "Sim" : "Nao"}
