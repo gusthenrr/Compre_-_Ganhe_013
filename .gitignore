@@ -1,0 +1,28 @@
+# Environment
+.env
+.env.*
+!*.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+flask-server/.venv/
+flask-server/instance/
+
+# Node / Expo
+node_modules/
+mobile/node_modules/
+mobile/.expo/
+mobile/dist/
+npm-debug.log*
+
+# Local logs
+logs/
+*.log
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
