@@ -91,7 +91,7 @@ export default function ExploreScreen() {
         <View style={{ paddingHorizontal: 20, paddingTop: 16, gap: 12 }}>
         <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
           <View style={{ flex: 1 }}>
-            <SearchInput value={search} onChangeText={setSearch} placeholder="Buscar restaurantes, bairros..." />
+            <SearchInput value={search} onChangeText={setSearch} placeholder="Buscar restaurante" />
           </View>
           <View
             style={{

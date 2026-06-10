@@ -32,6 +32,8 @@ export function SearchInput({ value, onChangeText, placeholder = "Buscar restaur
         onChangeText={onChangeText}
         placeholder={placeholder}
         placeholderTextColor={theme.placeholder}
+        multiline={false}
+        numberOfLines={1}
         style={{
           color: theme.text,
           flex: 1,
