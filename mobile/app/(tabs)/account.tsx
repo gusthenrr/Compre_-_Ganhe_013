@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { KeyRound, LogOut, UserRound } from "lucide-react-native";
+import { CalendarDays, CircleCheck, KeyRound, LogOut, Mail, MapPinX, UserRound, Wallet } from "lucide-react-native";
 import * as React from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 
@@ -66,24 +66,56 @@ export default function AccountScreen() {
         </View>
 
         <View style={{ flexDirection: "row", gap: 10, flexWrap: "wrap" }}>
-          <MetricCard label="Visitados" value={`${user?.visited_count ?? 0}`} />
-          <MetricCard label="Economia" value={formatMoney(user?.total_saved ?? 0)} />
-          <MetricCard label="Restantes" value={`${user?.remaining_promotions ?? 10}`} />
+          <MetricCard
+            label="Visitados"
+            value={`${user?.visited_count ?? 0}`}
+            color={theme.accent}
+            icon={<CircleCheck color={theme.accent} size={16} strokeWidth={2.6} />}
+          />
+          <MetricCard
+            label="Economia"
+            value={formatMoney(user?.total_saved ?? 0)}
+            color="#F7C948"
+            icon={<Wallet color="#F7C948" size={16} strokeWidth={2.6} />}
+          />
+          <MetricCard
+            label="Não visitados"
+            value={`${user?.remaining_promotions ?? 10}`}
+            color="#2F80ED"
+            icon={<MapPinX color="#2F80ED" size={16} strokeWidth={2.6} />}
+          />
         </View>
 
-        <View style={{ padding: 16, borderRadius: 20, backgroundColor: theme.surface, borderWidth: 1, borderColor: theme.border, gap: 10 }}>
-          <Text selectable style={{ color: theme.text, fontSize: 18, fontWeight: "900" }}>
-            Dados da conta
-          </Text>
-          <Text selectable style={{ color: theme.muted, fontWeight: "700" }}>
-            Nome: {user?.name}
-          </Text>
-          <Text selectable style={{ color: theme.muted, fontWeight: "700" }}>
-            E-mail/telefone: {user?.identifier ?? user?.email ?? user?.phone}
-          </Text>
-          <Text selectable style={{ color: theme.muted, fontWeight: "700" }}>
-            Data de nascimento: {formatBirthDate(user?.birth_date)}
-          </Text>
+        <View style={{ padding: 16, borderRadius: 20, backgroundColor: theme.surface, borderWidth: 1, borderColor: theme.border, gap: 12 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <View
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: 17,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: theme.dark ? "rgba(53,228,129,0.16)" : "#E8FFF2",
+              }}
+            >
+              <UserRound color={theme.accent} size={18} strokeWidth={2.6} />
+            </View>
+            <Text selectable style={{ color: theme.text, fontSize: 18, fontWeight: "900" }}>
+              Dados da conta
+            </Text>
+          </View>
+
+          <AccountInfoRow icon={<UserRound color={theme.accent} size={17} strokeWidth={2.5} />} label="Nome" value={user?.name ?? "Gustavo"} />
+          <AccountInfoRow
+            icon={<Mail color={theme.accent} size={17} strokeWidth={2.5} />}
+            label="E-mail/telefone"
+            value={user?.identifier ?? user?.email ?? user?.phone ?? "gustavo@email.com"}
+          />
+          <AccountInfoRow
+            icon={<CalendarDays color={theme.accent} size={17} strokeWidth={2.5} />}
+            label="Data de nascimento"
+            value={formatBirthDate(user?.birth_date)}
+          />
         </View>
 
         <View style={{ padding: 16, borderRadius: 20, backgroundColor: theme.surface, borderWidth: 1, borderColor: theme.border, gap: 12 }}>
@@ -158,5 +190,34 @@ export default function AccountScreen() {
         </Pressable>
       </ScrollView>
     </AppBackground>
+  );
+}
+
+function AccountInfoRow({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+  const theme = useAppTheme();
+
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+      <View
+        style={{
+          width: 30,
+          height: 30,
+          borderRadius: 15,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: theme.dark ? "rgba(255,255,255,0.08)" : "#F0F5FF",
+        }}
+      >
+        {icon}
+      </View>
+      <View style={{ flex: 1, minWidth: 0 }}>
+        <Text selectable style={{ color: theme.muted, fontSize: 12, fontWeight: "800" }}>
+          {label}
+        </Text>
+        <Text selectable style={{ color: theme.text, fontSize: 15, fontWeight: "800" }} numberOfLines={1}>
+          {value}
+        </Text>
+      </View>
+    </View>
   );
 }
