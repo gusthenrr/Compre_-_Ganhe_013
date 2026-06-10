@@ -1,9 +1,9 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { Check } from "lucide-react-native";
+import { CalendarDays, UserRound } from "lucide-react-native";
 import * as React from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Text, View } from "react-native";
 
-import { AppBackground } from "@/components/app-background";
+import { AuthField, AuthPrimaryButton, AuthScreen } from "@/components/auth-screen";
 import { useAuth } from "@/context/auth-context";
 import { useAppTheme } from "@/theme/colors";
 
@@ -44,77 +44,31 @@ export default function CompleteProfileScreen() {
   }
 
   return (
-    <AppBackground>
-      <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={{ padding: 24, gap: 22, flexGrow: 1, justifyContent: "center" }}>
-        <View style={{ gap: 8 }}>
-          <Text selectable style={{ color: theme.muted, fontSize: 16 }}>
-            Segunda etapa
-          </Text>
-          <Text selectable style={{ color: theme.text, fontSize: 32, fontWeight: "800" }}>
-            Complete seu cadastro
-          </Text>
-        </View>
+    <AuthScreen title="Seu perfil" subtitle="Compre & Ganhe 013">
+      <View style={{ gap: 14 }}>
+        <AuthField
+          icon={<UserRound color={theme.accent} size={19} strokeWidth={2.3} />}
+          value={name}
+          onChangeText={setName}
+          autoCapitalize="words"
+          placeholder="Nome"
+        />
+        <AuthField
+          icon={<CalendarDays color={theme.accent} size={19} strokeWidth={2.3} />}
+          value={birthDate}
+          onChangeText={setBirthDate}
+          keyboardType="numbers-and-punctuation"
+          placeholder="Data de nascimento"
+        />
+      </View>
 
-        <View style={{ gap: 12 }}>
-          <TextInput
-            value={name}
-            onChangeText={setName}
-            placeholder="Nome"
-            placeholderTextColor={theme.placeholder}
-            style={{
-              minHeight: 52,
-              borderRadius: 16,
-              paddingHorizontal: 16,
-              color: theme.text,
-              backgroundColor: theme.input,
-              borderWidth: 1,
-              borderColor: theme.border,
-            }}
-          />
-          <TextInput
-            value={birthDate}
-            onChangeText={setBirthDate}
-            keyboardType="numbers-and-punctuation"
-            placeholder="Data de nascimento"
-            placeholderTextColor={theme.placeholder}
-            style={{
-              minHeight: 52,
-              borderRadius: 16,
-              paddingHorizontal: 16,
-              color: theme.text,
-              backgroundColor: theme.input,
-              borderWidth: 1,
-              borderColor: theme.border,
-            }}
-          />
+      {error ? (
+        <Text selectable style={{ color: theme.danger, fontWeight: "800", textAlign: "center", marginTop: -14 }}>
+          {error}
+        </Text>
+      ) : null}
 
-          {error ? (
-            <Text selectable style={{ color: theme.danger, fontWeight: "700" }}>
-              {error}
-            </Text>
-          ) : null}
-
-          <Pressable
-            onPress={finish}
-            disabled={loading}
-            style={{
-              minHeight: 54,
-              borderRadius: 16,
-              backgroundColor: theme.primary,
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "row",
-              gap: 10,
-              opacity: loading ? 0.75 : 1,
-            }}
-          >
-            <Check color="#FFFFFF" size={20} strokeWidth={2.5} />
-            <Text selectable style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "800" }}>
-              {loading ? "Finalizando..." : "Finalizar cadastro"}
-            </Text>
-          </Pressable>
-        </View>
-      </ScrollView>
-    </AppBackground>
+      <AuthPrimaryButton label="Finalizar cadastro" loadingLabel="Finalizando..." loading={loading} onPress={finish} />
+    </AuthScreen>
   );
 }
