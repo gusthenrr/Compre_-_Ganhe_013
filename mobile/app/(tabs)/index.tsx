@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import { Banknote, Flame, UserRound } from "lucide-react-native";
 import * as React from "react";
-import { ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
 import { AppBackground } from "@/components/app-background";
 import { RestaurantCard } from "@/components/restaurant-card";
@@ -36,10 +36,12 @@ export default function HomeScreen() {
   const { user } = useAuth();
   const { restaurants } = useAppData();
   const [search, setSearch] = React.useState("");
+  const [highlightFilter, setHighlightFilter] = React.useState<"nearby" | "favorites">("nearby");
 
   const filtered = restaurants.filter((restaurant) => matchesSearch(restaurant, search));
   const nearby = filtered.slice(0, 6);
-  const favorites = restaurants.filter((restaurant) => restaurant.is_favorite);
+  const favorites = filtered.filter((restaurant) => restaurant.is_favorite);
+  const highlighted = highlightFilter === "nearby" ? nearby : favorites;
   const allPreview = filtered.slice(0, 4);
 
   return (
@@ -95,18 +97,35 @@ export default function HomeScreen() {
         <SearchInput value={search} onChangeText={setSearch} />
 
         <View style={{ gap: 12 }}>
-          <SectionHeader title="Mais proximos de mim" />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 14 }}>
-            {nearby.map((restaurant) => (
-              <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-            ))}
-          </ScrollView>
-        </View>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 8,
+              padding: 4,
+              borderRadius: 18,
+              backgroundColor: theme.surface,
+              borderWidth: 1,
+              borderColor: theme.border,
+            }}
+          >
+            <HighlightTab
+              active={highlightFilter === "nearby"}
+              label="Perto de mim"
+              onPress={() => setHighlightFilter("nearby")}
+            />
+            <HighlightTab
+              active={highlightFilter === "favorites"}
+              label="Meus favoritos"
+              onPress={() => setHighlightFilter("favorites")}
+            />
+          </View>
 
-        <View style={{ gap: 10 }}>
-          <SectionHeader title="Meus favoritos" />
-          {favorites.length ? (
-            favorites.slice(0, 3).map((restaurant) => <RestaurantListItem key={restaurant.id} restaurant={restaurant} compact />)
+          {highlighted.length ? (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 14 }}>
+              {highlighted.map((restaurant) => (
+                <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+              ))}
+            </ScrollView>
           ) : (
             <View style={{ padding: 18, borderRadius: 18, backgroundColor: theme.surface, borderWidth: 1, borderColor: theme.border }}>
               <Text selectable style={{ color: theme.text, fontWeight: "800" }}>
@@ -127,6 +146,39 @@ export default function HomeScreen() {
         </View>
       </ScrollView>
     </AppBackground>
+  );
+}
+
+function HighlightTab({ active, label, onPress }: { active: boolean; label: string; onPress: () => void }) {
+  const theme = useAppTheme();
+
+  return (
+    <Pressable
+      onPress={onPress}
+      style={{
+        flex: 1,
+        minHeight: 42,
+        borderRadius: 14,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: active ? theme.accent : "transparent",
+        paddingHorizontal: 10,
+      }}
+    >
+      <Text
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.68}
+        style={{
+          color: active ? "#06111D" : theme.text,
+          fontSize: 15,
+          fontWeight: "900",
+          textAlign: "center",
+        }}
+      >
+        {label}
+      </Text>
+    </Pressable>
   );
 }
 
