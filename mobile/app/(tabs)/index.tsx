@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { Banknote, Flame, UserRound } from "lucide-react-native";
+import { Banknote, Flame, LocateFixed, UserRound } from "lucide-react-native";
 import * as React from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
@@ -34,7 +34,7 @@ function matchesSearch(restaurant: Restaurant, search: string) {
 export default function HomeScreen() {
   const theme = useAppTheme();
   const { user } = useAuth();
-  const { restaurants } = useAppData();
+  const { restaurants, hasUserLocation, locationLoading, requestUserLocation } = useAppData();
   const [search, setSearch] = React.useState("");
   const [highlightFilter, setHighlightFilter] = React.useState<"nearby" | "favorites">("nearby");
 
@@ -95,6 +95,29 @@ export default function HomeScreen() {
         </View>
 
         <SearchInput value={search} onChangeText={setSearch} />
+
+        {!hasUserLocation ? (
+          <Pressable
+            onPress={requestUserLocation}
+            style={{
+              minHeight: 48,
+              borderRadius: 16,
+              paddingHorizontal: 14,
+              paddingVertical: 10,
+              backgroundColor: theme.surface,
+              borderWidth: 1,
+              borderColor: theme.border,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <LocateFixed color={theme.accent} size={18} strokeWidth={2.5} />
+            <Text selectable style={{ flex: 1, color: theme.text, fontWeight: "800" }}>
+              {locationLoading ? "Buscando sua localizacao..." : "Ative a localizacao para ver parceiros perto de voce."}
+            </Text>
+          </Pressable>
+        ) : null}
 
         <View style={{ gap: 12 }}>
           <View

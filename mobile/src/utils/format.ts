@@ -2,7 +2,10 @@ export function formatMoney(value: number) {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 }
 
-export function formatDistance(meters: number) {
+export function formatDistance(meters?: number | null) {
+  if (typeof meters !== "number") {
+    return "";
+  }
   if (meters >= 1000) {
     return `${(meters / 1000).toFixed(1).replace(".", ",")} km`;
   }

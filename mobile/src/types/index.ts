@@ -19,7 +19,7 @@ export type Restaurant = {
   promotion_book_image_url: string;
   latitude: number;
   longitude: number;
-  distance_meters: number;
+  distance_meters: number | null;
   accepts_in_person: boolean;
   accepts_delivery: boolean;
   service_mode: string;

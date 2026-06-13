@@ -18,6 +18,7 @@ export function RestaurantCard({ restaurant }: Props) {
   const theme = useAppTheme();
   const { toggleFavorite } = useAppData();
   const serviceMode = formatServiceMode(restaurant.service_mode);
+  const hasDistance = typeof restaurant.distance_meters === "number";
 
   return (
     <Pressable
@@ -41,7 +42,8 @@ export function RestaurantCard({ restaurant }: Props) {
             <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
               <MapPin color={theme.accent} size={15} strokeWidth={2.6} />
               <Text selectable numberOfLines={1} style={{ color: theme.muted, fontWeight: "700" }}>
-                {restaurant.neighborhood} • {formatDistance(restaurant.distance_meters)}
+                {restaurant.neighborhood}
+                {hasDistance ? ` • ${formatDistance(restaurant.distance_meters)}` : ""}
               </Text>
             </View>
           </View>

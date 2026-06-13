@@ -20,6 +20,7 @@ export function RestaurantListItem({ restaurant, compact = false }: Props) {
   const { toggleFavorite } = useAppData();
   const serviceMode = formatServiceMode(restaurant.service_mode);
   const combinedServiceMode = serviceMode === "Presencial e delivery";
+  const hasDistance = typeof restaurant.distance_meters === "number";
 
   return (
     <Pressable
@@ -55,12 +56,14 @@ export function RestaurantListItem({ restaurant, compact = false }: Props) {
         </Text>
 
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-            <MapPin color={theme.accent} size={14} strokeWidth={2.6} />
-            <Text selectable style={{ color: theme.muted, fontSize: 13, fontWeight: "700" }}>
-              {formatDistance(restaurant.distance_meters)}
-            </Text>
-          </View>
+          {hasDistance ? (
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+              <MapPin color={theme.accent} size={14} strokeWidth={2.6} />
+              <Text selectable style={{ color: theme.muted, fontSize: 13, fontWeight: "700" }}>
+                {formatDistance(restaurant.distance_meters)}
+              </Text>
+            </View>
+          ) : null}
           <Text
             selectable
             numberOfLines={combinedServiceMode ? 2 : 1}

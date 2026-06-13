@@ -10,7 +10,22 @@ module.exports = {
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "automatic",
-    plugins: ["expo-system-ui"],
+    plugins: [
+      "expo-system-ui",
+      [
+        "expo-location",
+        {
+          locationWhenInUsePermission: "Usamos sua localizacao para calcular os restaurantes mais proximos.",
+        },
+      ],
+      [
+        "expo-image-picker",
+        {
+          cameraPermission: "Usamos a camera para registrar a foto do uso da promocao.",
+          photosPermission: "Usamos suas fotos apenas se voce decidir anexar uma imagem.",
+        },
+      ],
+    ],
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.gusthenrr.compre-ganhe-013",
@@ -22,6 +37,12 @@ module.exports = {
     android: {
       package: "com.gusthenrr.compre_ganhe_013",
       userInterfaceStyle: "automatic",
+      permissions: [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.CAMERA",
+      ],
+      blockedPermissions: ["android.permission.RECORD_AUDIO"],
       adaptiveIcon: {
         backgroundColor: "#06234F",
         foregroundImage: "./assets/android-icon-foreground.png",
